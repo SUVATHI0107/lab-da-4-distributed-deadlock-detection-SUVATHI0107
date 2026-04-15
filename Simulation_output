@@ -1,0 +1,147 @@
+============================================================
+Distributed Deadlock Detection Simulation
+Algorithm: Chandy-Misra-Haas Edge-Chasing
+============================================================
+
+--- Scenario: SIMPLE ---
+Processes: 9 across 3 sites
+Events logged: 17
+Deadlocks detected: 2
+Deadlocks resolved: 2
+Probe messages sent: 4
+  Deadlock 1: 0 → 3 → 0
+  Deadlock 2: 3 → 0 → 3
+
+Event Log:
+  [t=0] simulation_start: Simulation started: 3 sites, 9 processes, scenario='simple'
+  [t=0] resource_request: P0 (Site 0) → waiting for R2 held by P3 (Site 1)
+  [t=0] resource_request: P3 (Site 1) → waiting for R0 held by P0 (Site 0)
+  [t=1] probe_sent: Probe(0,0,3) sent by P0
+  [t=1] probe_sent: Probe(3,3,0) sent by P3
+  [t=2] probe_received: Probe(0,0,3) received by P3
+  [t=2] probe_sent: Probe(0,3,0) forwarded by P3
+  [t=2] probe_received: Probe(3,3,0) received by P0
+  [t=2] probe_sent: Probe(3,0,3) forwarded by P0
+  [t=3] probe_received: Probe(0,3,0) received by P0
+  [t=3] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 0 → 3 → 0
+  [t=3] probe_received: Probe(3,0,3) received by P3
+  [t=3] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 3 → 0 → 3
+  [t=3] resource_grant: P0 released resource → P3 unblocked
+  [t=3] deadlock_resolved: ✅ Deadlock resolved: P3 (Site 1) aborted as victim
+  [t=3] deadlock_resolved: ✅ Deadlock resolved: P3 (Site 1) aborted as victim
+  [t=3] simulation_end: Simulation complete (t=3). Deadlocks detected: 2, Resolved: 2
+
+--- Scenario: CHAIN ---
+Processes: 9 across 3 sites
+Events logged: 30
+Deadlocks detected: 3
+Deadlocks resolved: 3
+Probe messages sent: 9
+  Deadlock 1: 0 → 3 → 6 → 0
+  Deadlock 2: 3 → 6 → 0 → 3
+  Deadlock 3: 6 → 0 → 3 → 6
+
+Event Log:
+  [t=0] simulation_start: Simulation started: 3 sites, 9 processes, scenario='chain'
+  [t=0] resource_request: P0 (Site 0) → waiting for R2 held by P3 (Site 1)
+  [t=0] resource_request: P3 (Site 1) → waiting for R4 held by P6 (Site 2)
+  [t=0] resource_request: P6 (Site 2) → waiting for R0 held by P0 (Site 0)
+  [t=1] probe_sent: Probe(0,0,3) sent by P0
+  [t=1] probe_sent: Probe(3,3,6) sent by P3
+  [t=1] probe_sent: Probe(6,6,0) sent by P6
+  [t=2] probe_received: Probe(0,0,3) received by P3
+  [t=2] probe_sent: Probe(0,3,6) forwarded by P3
+  [t=2] probe_received: Probe(3,3,6) received by P6
+  [t=2] probe_sent: Probe(3,6,0) forwarded by P6
+  [t=2] probe_received: Probe(6,6,0) received by P0
+  [t=2] probe_sent: Probe(6,0,3) forwarded by P0
+  [t=3] probe_received: Probe(0,3,6) received by P6
+  [t=3] probe_sent: Probe(0,6,0) forwarded by P6
+  [t=3] probe_received: Probe(3,6,0) received by P0
+  [t=3] probe_sent: Probe(3,0,3) forwarded by P0
+  [t=3] probe_received: Probe(6,0,3) received by P3
+  [t=3] probe_sent: Probe(6,3,6) forwarded by P3
+  [t=4] probe_received: Probe(0,6,0) received by P0
+  [t=4] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 0 → 3 → 6 → 0
+  [t=4] probe_received: Probe(3,0,3) received by P3
+  [t=4] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 3 → 6 → 0 → 3
+  [t=4] probe_received: Probe(6,3,6) received by P6
+  [t=4] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 6 → 0 → 3 → 6
+  [t=4] resource_grant: P0 released resource → P6 unblocked
+  [t=4] deadlock_resolved: ✅ Deadlock resolved: P6 (Site 2) aborted as victim
+  [t=4] deadlock_resolved: ✅ Deadlock resolved: P6 (Site 2) aborted as victim
+  [t=4] deadlock_resolved: ✅ Deadlock resolved: P6 (Site 2) aborted as victim
+  [t=4] simulation_end: Simulation complete (t=4). Deadlocks detected: 3, Resolved: 3
+
+--- Scenario: COMPLEX ---
+Processes: 9 across 3 sites
+Events logged: 58
+Deadlocks detected: 6
+Deadlocks resolved: 6
+Probe messages sent: 18
+  Deadlock 1: 0 → 1 → 2 → 0
+  Deadlock 2: 1 → 2 → 0 → 1
+  Deadlock 3: 2 → 0 → 1 → 2
+  Deadlock 4: 3 → 4 → 5 → 3
+  Deadlock 5: 4 → 5 → 3 → 4
+  Deadlock 6: 5 → 3 → 4 → 5
+
+Event Log:
+  [t=0] simulation_start: Simulation started: 3 sites, 9 processes, scenario='complex'
+  [t=0] resource_request: P0 (Site 0) → waiting for R0 held by P1 (Site 0)
+  [t=0] resource_request: P1 (Site 0) → waiting for R1 held by P2 (Site 0)
+  [t=0] resource_request: P2 (Site 0) → waiting for R0 held by P0 (Site 0)
+  [t=0] resource_request: P3 (Site 1) → waiting for R2 held by P4 (Site 1)
+  [t=0] resource_request: P4 (Site 1) → waiting for R3 held by P5 (Site 1)
+  [t=0] resource_request: P5 (Site 1) → waiting for R2 held by P3 (Site 1)
+  [t=0] probe_sent: Probe(0,0,1) sent by P0
+  [t=0] probe_sent: Probe(1,1,2) sent by P1
+  [t=0] probe_sent: Probe(2,2,0) sent by P2
+  [t=0] probe_sent: Probe(3,3,4) sent by P3
+  [t=0] probe_sent: Probe(4,4,5) sent by P4
+  [t=0] probe_sent: Probe(5,5,3) sent by P5
+  [t=0] probe_received: Probe(0,0,1) received by P1
+  [t=0] probe_sent: Probe(0,1,2) forwarded by P1
+  [t=0] probe_received: Probe(1,1,2) received by P2
+  [t=0] probe_sent: Probe(1,2,0) forwarded by P2
+  [t=0] probe_received: Probe(2,2,0) received by P0
+  [t=0] probe_sent: Probe(2,0,1) forwarded by P0
+  [t=0] probe_received: Probe(3,3,4) received by P4
+  [t=0] probe_sent: Probe(3,4,5) forwarded by P4
+  [t=0] probe_received: Probe(4,4,5) received by P5
+  [t=0] probe_sent: Probe(4,5,3) forwarded by P5
+  [t=0] probe_received: Probe(5,5,3) received by P3
+  [t=0] probe_sent: Probe(5,3,4) forwarded by P3
+  [t=0] probe_received: Probe(0,1,2) received by P2
+  [t=0] probe_sent: Probe(0,2,0) forwarded by P2
+  [t=0] probe_received: Probe(1,2,0) received by P0
+  [t=0] probe_sent: Probe(1,0,1) forwarded by P0
+  [t=0] probe_received: Probe(2,0,1) received by P1
+  [t=0] probe_sent: Probe(2,1,2) forwarded by P1
+  [t=0] probe_received: Probe(3,4,5) received by P5
+  [t=0] probe_sent: Probe(3,5,3) forwarded by P5
+  [t=0] probe_received: Probe(4,5,3) received by P3
+  [t=0] probe_sent: Probe(4,3,4) forwarded by P3
+  [t=0] probe_received: Probe(5,3,4) received by P4
+  [t=0] probe_sent: Probe(5,4,5) forwarded by P4
+  [t=0] probe_received: Probe(0,2,0) received by P0
+  [t=0] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 0 → 1 → 2 → 0
+  [t=0] probe_received: Probe(1,0,1) received by P1
+  [t=0] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 1 → 2 → 0 → 1
+  [t=0] probe_received: Probe(2,1,2) received by P2
+  [t=0] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 2 → 0 → 1 → 2
+  [t=0] probe_received: Probe(3,5,3) received by P3
+  [t=0] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 3 → 4 → 5 → 3
+  [t=0] probe_received: Probe(4,3,4) received by P4
+  [t=0] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 4 → 5 → 3 → 4
+  [t=0] probe_received: Probe(5,4,5) received by P5
+  [t=0] deadlock_detected: 🔴 DEADLOCK DETECTED! Cycle: 5 → 3 → 4 → 5
+  [t=0] resource_grant: P0 released resource → P2 unblocked
+  [t=0] deadlock_resolved: ✅ Deadlock resolved: P2 (Site 0) aborted as victim
+  [t=0] deadlock_resolved: ✅ Deadlock resolved: P2 (Site 0) aborted as victim
+  [t=0] deadlock_resolved: ✅ Deadlock resolved: P2 (Site 0) aborted as victim
+  [t=0] resource_grant: P3 released resource → P5 unblocked
+  [t=0] deadlock_resolved: ✅ Deadlock resolved: P5 (Site 1) aborted as victim
+  [t=0] deadlock_resolved: ✅ Deadlock resolved: P5 (Site 1) aborted as victim
+  [t=0] deadlock_resolved: ✅ Deadlock resolved: P5 (Site 1) aborted as victim
+  [t=0] simulation_end: Simulation complete (t=0). Deadlocks detected: 6, Resolved: 6
